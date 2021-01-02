@@ -256,10 +256,10 @@ class SearchTeamsCommand(Command):
 class CreditCommand(Command):
     name = "credit"
     template = "m;credit"
-    description = "Shows artist credit for matteo's avatar."
+    description = "Shows credit to the github where the bot is being developed."
 
     async def execute(self, msg, command):
-        await msg.channel.send("Our avatar was graciously provided to us, with permission, by @HetreaSky on Twitter.")
+        await msg.channel.send("This bot is being developed by Xvi and the other fabulous people at SIBR. The code can be found at https://github.com/Sakimori/matteo-the-prestige")
 
 class HelpCommand(Command):
     name = "help"
@@ -366,6 +366,7 @@ def config():
 async def on_ready():
     db.initialcheck()
     print(f"logged in as {client.user} with token {config()['token']}")
+    await client.change_presence(activity=discord.Game(name="Use m;help"))
 
 @client.event
 async def on_reaction_add(reaction, user):
@@ -547,11 +548,11 @@ Creator, type `{newgame.name} done` to finalize lineups.""")
     await game_task
 
 async def watch_game(channel, newgame, user = None):
-    blank_emoji = discord.utils.get(client.emojis, id = 790899850295509053)
-    empty_base = discord.utils.get(client.emojis, id = 790899850395779074)
-    occupied_base = discord.utils.get(client.emojis, id = 790899850320543745)
-    out_emoji = discord.utils.get(client.emojis, id = 791578957241778226)
-    in_emoji = discord.utils.get(client.emojis, id = 791578957244792832)
+    blank_emoji = discord.utils.get(client.emojis, id = 795024962921562144)
+    empty_base = discord.utils.get(client.emojis, id = 795024693001977896)
+    occupied_base = discord.utils.get(client.emojis, id = 795024726472654888)
+    out_emoji = discord.utils.get(client.emojis, id = 795024726003023903)
+    in_emoji = discord.utils.get(client.emojis, id = 795024726447620107)
 
     if user is not None:
         await channel.send(f"Game for {user.mention}:")
@@ -798,20 +799,20 @@ def team_from_message(command):
 async def save_team_confirm(message, newteam):
     await message.channel.send(embed=build_team_embed(newteam))
     checkmsg = await message.channel.send("Does this look good to you, boss?")
-    await checkmsg.add_reaction("👍")
-    await checkmsg.add_reaction("👎")
+    await checkmsg.add_reaction("\N{THUMBS UP SIGN}")
+    await checkmsg.add_reaction("\N{THUMBS DOWN SIGN}")
 
     def react_check(react, user):
         return user == message.author and react.message == checkmsg
 
     try:
         react, user = await client.wait_for('reaction_add', timeout=20.0, check=react_check)
-        if react.emoji == "👍":
+        if str(react.emoji) == "\N{THUMBS UP SIGN}":
             await message.channel.send("You got it, chief. Saving now.")
             games.save_team(newteam, message.author.id)
-            await message.channel.send("Saved! Thank you for flying Air Matteo. We hope you had a pleasant data entry.")
+            await message.channel.send("Saved! Thank you for flying Air Fralesball. We hope you had a pleasant data entry.")
             return
-        elif react.emoji == "👎":
+        elif str(react.emoji) == "\N{THUMBS DOWN SIGN}":
             await message.channel.send("Message received. Pumping brakes, turning this car around. Try again, chief.")
             return
     except asyncio.TimeoutError:
@@ -836,12 +837,15 @@ async def team_pages(msg, all_teams, search_term=None):
                 break
         pages.append(embed)
 
-    teams_list = await msg.channel.send(embed=pages[0])
-    current_page = 0
+    try:
+        teams_list = await msg.channel.send(embed=pages[0])
+        current_page = 0
+    except IndexError:
+        await msg.channel.send('No teams found boss')
 
     if page_max > 1:
-        await teams_list.add_reaction("◀")
-        await teams_list.add_reaction("▶")
+        await teams_list.add_reaction("\:thumbsup:")
+        await teams_list.add_reaction("\:thumbsdown:")
 
         def react_check(react, user):
             return user == msg.author and react.message == teams_list
