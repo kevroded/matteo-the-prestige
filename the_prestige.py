@@ -767,8 +767,8 @@ def build_star_embed(player_json):
             embedstring += "⚪️"
         embed.add_field(name=starkeys[key], value=embedstring, inline=False)
     vibes = float(player_json["current_vibe"])
-    vibe = vibe_check(vibes)
-    embed.add_field(name="Vibe", value=vibe, inline=False)
+    vibe_done = vibe_check(vibes)
+    embed.add_field(name="Vibe", value=vibe_done, inline=False)
     return embed
 
 def team_from_collection(newteam_json):
