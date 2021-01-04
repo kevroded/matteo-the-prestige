@@ -6,6 +6,7 @@ This fork changes small things about the bot to better fit in in the FredChat di
 - Adds the help command as the bot's status
 - Shows a players vibes when requesting their stats
 - Updated the credit command to credit the bot Sakimori and SIBR as the original profile pic is not being used
+- Game history can be viewed in the same style embed as showallteams
 
 # matteo-the-prestige
 # simsim discord bot
