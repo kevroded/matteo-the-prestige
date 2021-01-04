@@ -343,7 +343,7 @@ commands = [
     CreditCommand(),
     RomanCommand(),
     HelpCommand(),
-    ShowHistory(),
+    ShowHistoryCommand(),
 ]
 
 client = discord.Client()
