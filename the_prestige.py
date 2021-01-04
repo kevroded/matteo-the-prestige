@@ -736,6 +736,7 @@ def build_team_embed(team):
     return embed
 
 def vibe_check(vibes):
+    print(vibes)
     if vibes < -0.8:
         vibe_text = "Honestly Terrible"
     elif vibes < -0.4 and vibes > -0.8:
