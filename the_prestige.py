@@ -321,7 +321,7 @@ class ShowHistoryCommand(Command):
     description = "Shows all game history"
 
     async def execute(self, msg, command):
-        list_task = asyncio.create_task(history_pages(msg, game.get_history()))
+        list_task = asyncio.create_task(history_pages(msg, games.get_history()))
 
 
 commands = [
