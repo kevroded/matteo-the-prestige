@@ -721,8 +721,14 @@ def get_all_teams():
     return teams
 
 def get_history():
+    games = []
     for game in db.get_history():
-        print(game)
+        game_dict = {"Team1" : game[1],
+                     "Team1Score" : game[2],
+                     "Team2" : game[3],
+                     "Team2Score" : game[4]}
+        games.append(game_dict)
+    return games
 
 def search_team(search_term):
     teams = []

@@ -321,8 +321,7 @@ class ShowHistoryCommand(Command):
     description = "Shows all game history"
 
     async def execute(self, msg, command):
-        #list_task = asyncio.create_task(history_pages(msg, game.get_history()))
-        games.get_history()
+        list_task = asyncio.create_task(history_pages(msg, game.get_history()))
 
 
 commands = [
@@ -894,6 +893,48 @@ async def team_pages(msg, all_teams, search_term=None):
             except asyncio.TimeoutError:
                 return
 
+async def history_pages(msg, all_games, search_term=None):
+    pages = []
+    page_max = math.ceil(len(all_games)/25)
+    if search_term is not None:
+        title_text = f"All games matching \"{search_term}\":"
+    else:
+        title_text = "All games"
 
+    for page in range(0,page_max):
+        embed = discord.Embed(color=discord.Color.purple(), title=title_text)
+        embed.set_footer(text = f"Page {page+1} of {page_max}")
+        for i in range(0,25):
+            try:
+                embed.add_field(name=str(all_games[i+25*page]["Team1"])+' at '+str(all_games[i+25*page]["Team2"]), value=str(all_games[i+25*page]["Team1Score"])+' at '+str(all_games[i+25*page]["Team2Score"]))
+            except:
+                break
+        pages.append(embed)
+
+    try:
+        teams_list = await msg.channel.send(embed=pages[0])
+        current_page = 0
+    except IndexError:
+        await msg.channel.send('No games found boss')
+
+    if page_max > 1:
+        await teams_list.add_reaction("\:thumbsup:")
+        await teams_list.add_reaction("\:thumbsdown:")
+
+        def react_check(react, user):
+            return user == msg.author and react.message == teams_list
+
+        while True:
+            try:
+                react, user = await client.wait_for('reaction_add', timeout=60.0, check=react_check)
+                if react.emoji == "◀" and current_page > 0:
+                    current_page -= 1
+                    await react.remove(user)
+                elif react.emoji == "▶" and current_page < (page_max-1):
+                    current_page += 1
+                    await react.remove(user)
+                await teams_list.edit(embed=pages[current_page])
+            except asyncio.TimeoutError:
+                return
 
 client.run(config()["token"])
