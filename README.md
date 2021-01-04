@@ -1,3 +1,12 @@
+# A simsim fork for the FredChat
+
+This fork changes small things about the bot to better fit in in the FredChat discord. The official readme can be seen below and a summary of changes is viewable directly below this 
+- Removes almost all references to Matteo as that is not the name of the bot user
+- Adds in new weather effects
+- Adds the help command as the bot's status
+- Shows a players vibes when requesting their stats
+- Updated the credit command to credit the bot Sakimori and SIBR as the original profile pic is not being used
+
 # matteo-the-prestige
 # simsim discord bot
 
