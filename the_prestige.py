@@ -685,12 +685,13 @@ async def watch_game(channel, newgame, user = None):
     await embed.unpin()
     gamesarray.pop(gamesarray.index(newgame)) #cleanup is important!
     newgame.add_stats()
+    db.cache_history(newgame.teams['home'].name, newgame.teams["home"].score, newgame.teams['away'].name, newgame.teams['away'].score)
     del newgame
     if len(gamesqueue) > 0:
         channel, game, user_mention = gamesqueue.pop(0)
         queue_task = asyncio.create_task(play_from_queue(channel, game, user_mention))
         await queue_task
-    db.cache_history(newgame.teams['home'].name, newgame.teams["home"].score, newgame.teams['away'].name, newgame.teams['away'].score)
+
 
 async def play_from_queue(channel, game, user_mention):
     await channel.send(f"{user_mention}, your game's ready.")
