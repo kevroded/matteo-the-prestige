@@ -906,7 +906,7 @@ async def history_pages(msg, all_games, search_term=None):
         embed.set_footer(text = f"Page {page+1} of {page_max}")
         for i in range(0,25):
             try:
-                embed.add_field(name=str(all_games[i+25*page]["Team1"])+' at '+str(all_games[i+25*page]["Team2"]), value=str(all_games[i+25*page]["Team1Score"])+' at '+str(all_games[i+25*page]["Team2Score"]))
+                embed.add_field(name=str(all_games[i+25*page]["Team1"])+' at '+str(all_games[i+25*page]["Team2"]), value=str(all_games[i+25*page]["Team1Score"])+' to '+str(all_games[i+25*page]["Team2Score"]))
             except:
                 break
         pages.append(embed)
