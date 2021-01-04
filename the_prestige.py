@@ -767,7 +767,6 @@ def build_star_embed(player_json):
         elif starnum == 0:  # why check addhalf twice, amirite
             embedstring += "⚪️"
         embed.add_field(name=starkeys[key], value=embedstring, inline=False)
-    print(player_json)
     vibes = str(player_json["current_vibe"])
     vibes = int(vibes[0])
     vibe = vibe_check(vibes)
