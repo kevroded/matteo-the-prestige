@@ -323,4 +323,4 @@ def get_history():
         c.execute("SELECT * FROM teams")
         history_strings = c.fetchall()
         conn.close()
-        return team_strings
+        return history_strings
