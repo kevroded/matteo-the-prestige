@@ -134,8 +134,8 @@ class StartGameCommand(Command):
 
         if innings is not None and innings < 2:
             await msg.channel.send("Anything less than 2 innings isn't even an outing. Try again.")
-            return 
-                                                    
+            return
+
         elif innings is not None and innings > 30 and msg.author.id not in config()["owners"]:
             await msg.channel.send("Y'all can't behave, so we've limited games to 30 innings. Ask xvi to start it with more if you really want to.")
             return
@@ -149,7 +149,7 @@ class StartGameCommand(Command):
                 await channel.send(f"We're running 10 games right now, and Discord probably isn't very pleased about it. You're at #{len(gamesqueue)+1} in the list.\nWe'll ping you when it's ready, chief.")
                 gamesqueue.append((channel, game, user_mention))
                 return
-            
+
             game_task = asyncio.create_task(watch_game(channel, game, user=msg.author))
             await game_task
 
@@ -161,7 +161,7 @@ class SetupGameCommand(Command):
     async def execute(self, msg, command):
         if len(gamesarray) > 45:
             await msg.channel.send("We're running 45 games and we doubt Discord will be happy with any more. These edit requests don't come cheap.")
-            return 
+            return
         elif config()["game_freeze"]:
             await msg.channel.send("Patch incoming. We're not allowing new games right now.")
             return
@@ -218,7 +218,7 @@ class ShowTeamCommand(Command):
     name = "showteam"
     template = "m;showteam [name]"
     description = "Shows information about any saved team."
-    
+
     async def execute(self, msg, command):
         team_name = command.strip()
         team = games.get_team(team_name)
@@ -233,7 +233,7 @@ class ShowTeamCommand(Command):
 
 class ShowAllTeamsCommand(Command):
     name = "showallteams"
-    template = "m;showallteams" 
+    template = "m;showallteams"
     description = "Shows a paginated list of all teams available for games which can be scrolled through."
 
     async def execute(self, msg, command):
@@ -572,7 +572,7 @@ async def watch_game(channel, newgame, user = None):
         state = newgame.gamestate_display_full()
 
         new_embed = discord.Embed(color=discord.Color.purple(), title=f"{newgame.teams['away'].name} at {newgame.teams['home'].name}")
-        
+
         new_embed.add_field(name=newgame.teams['away'].name, value=newgame.teams['away'].score, inline=True)
         new_embed.add_field(name=newgame.teams['home'].name, value=newgame.teams['home'].score, inline=True)
 
@@ -658,7 +658,7 @@ async def watch_game(channel, newgame, user = None):
 
         pause -= 1
         await asyncio.sleep(6)
-        
+
     title_string = f"{newgame.teams['away'].name} at {newgame.teams['home'].name} ended after {newgame.inning-1} innings"
     if (newgame.inning - 1) > newgame.max_innings: #if extra innings
         title_string += f" with {newgame.inning - (newgame.max_innings+1)} extra innings."
@@ -666,7 +666,7 @@ async def watch_game(channel, newgame, user = None):
         title_string += "."
 
     final_embed = discord.Embed(color=discord.Color.dark_purple(), title=title_string)
-    
+
     scorestring = f"{newgame.teams['away'].score} to {newgame.teams['home'].score}\n"
     if newgame.teams['away'].score > newgame.teams['home'].score:
         scorestring += f"{newgame.teams['away'].name} wins!"
@@ -678,7 +678,7 @@ async def watch_game(channel, newgame, user = None):
             scorestring += f", shaming {newgame.teams['away'].name}!"
 
 
-    
+
     final_embed.add_field(name="Final score:", value=scorestring)
     await embed.edit(content=None, embed=final_embed)
 
@@ -735,6 +735,23 @@ def build_team_embed(team):
     embed.set_footer(text=team.slogan)
     return embed
 
+def vibe_check(vibes):
+    if vibes < -0.8:
+        vibe_text = "Honestly Terrible"
+    if vibes < -0.4 and vibes > -0.8:
+        vibe_text = "Far Less Than Ideal"
+    if vibes < -0.1 and vibes > -0.4:
+        vibe_text = "Less Than Ideal"
+    elif vibes > -0.1 and vibes < 0.1:
+        vibe_text = "Neutral"
+    elif vibes > 0.1 and vibes < 0.4:
+        vibe_text = "Quality"
+    elif vibes > 0.4 and vibes < 0.8:
+        vibe_text = "Excellent"
+    elif vibes > 0.8:
+        vibe_text = "Most Excellent"
+    return vibe_text
+
 def build_star_embed(player_json):
     starkeys = {"batting_stars" : "Batting", "pitching_stars" : "Pitching", "baserunning_stars" : "Baserunning", "defense_stars" : "Defense"}
     embed = discord.Embed(color=discord.Color.purple(), title=player_json["name"])
@@ -749,6 +766,9 @@ def build_star_embed(player_json):
         elif starnum == 0:  # why check addhalf twice, amirite
             embedstring += "⚪️"
         embed.add_field(name=starkeys[key], value=embedstring, inline=False)
+    vibes = int(player_json["current_vibe"])
+    vibe = vibe_check(vibes)
+    embed.add_field(name="Vibe", value=vibe, inline=False)
     return embed
 
 def team_from_collection(newteam_json):
