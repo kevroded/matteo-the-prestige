@@ -215,7 +215,63 @@ class game(object):
                 fc_flag = False
                 outcome["text"] = appearance_outcomes.crows
                 crow = True
-        if pb_system_stat <= 0 and crow == False:
+            else:
+                        if pb_system_stat <= 0 and crow == False:
+                            outcome["ishit"] = False
+                            fc_flag = False
+                            if hitnum < -1.5:
+                                outcome["text"] = random.choice([appearance_outcomes.strikeoutlooking, appearance_outcomes.strikeoutswinging])
+                            elif hitnum < 1:
+                                outcome["text"] = appearance_outcomes.groundout
+                                outcome["defender"] = defender
+                            elif hitnum < 4:
+                                outcome["text"] = appearance_outcomes.flyout
+                                outcome["defender"] = defender
+                            else:
+                                outcome["text"] = appearance_outcomes.walk
+
+                            if self.bases[1] is not None and hitnum < -2 and self.outs != 2:
+                                outcome["text"] = appearance_outcomes.doubleplay
+                                outcome["defender"] = ""
+
+                            #for base in self.bases.values():
+                                #if base is not None:
+                                    #fc_flag = True
+
+                            runners = [(0,self.get_batter())]
+                            for base in range(1,4):
+                                if self.bases[base] == None:
+                                    break
+                                runners.append((base, self.bases[base]))
+                            outcome["runners"] = runners #list of consecutive baserunners: (base number, player object)
+
+                            if self.outs < 2 and len(runners) > 1: #fielder's choice replaces not great groundouts if any forceouts are present
+                                def_stat = random_star_gen("defense_stars", defender)
+                                if self.weather.name == "Coke Raine":
+                                    def_stat = def_stat / 0.9
+                                elif self.weather.name == "Molasses":
+                                    def_stat = def_stat * 0.9
+                                if -1.5 <= hitnum and hitnum < -0.5: #poorly hit groundouts
+                                    outcome["text"] = appearance_outcomes.fielderschoice
+                                    outcome["defender"] = ""
+
+                            if 2.5 <= hitnum and self.outs < 2: #well hit flyouts can lead to sacrifice flies/advanced runners
+                                if self.bases[2] is not None or self.bases[3] is not None:
+                                    outcome["advance"] = True
+                        elif crow == False:
+                            outcome["ishit"] = True
+                            if hitnum < 1:
+                                outcome["text"] = appearance_outcomes.single
+                            elif hitnum < 2.85:
+                                outcome["text"] = appearance_outcomes.double
+                            elif hitnum < 3.1:
+                                outcome["text"] = appearance_outcomes.triple
+                            else:
+                                if self.bases[1] is not None and self.bases[2] is not None and self.bases[3] is not None:
+                                    outcome["text"] = appearance_outcomes.grandslam
+                                else:
+                                    outcome["text"] = appearance_outcomes.homerun
+        elif pb_system_stat <= 0 and crow == False:
             outcome["ishit"] = False
             fc_flag = False
             if hitnum < -1.5:
@@ -257,7 +313,7 @@ class game(object):
             if 2.5 <= hitnum and self.outs < 2: #well hit flyouts can lead to sacrifice flies/advanced runners
                 if self.bases[2] is not None or self.bases[3] is not None:
                     outcome["advance"] = True
-        if crow == False:
+        elif crow == False:
             outcome["ishit"] = True
             if hitnum < 1:
                 outcome["text"] = appearance_outcomes.single
