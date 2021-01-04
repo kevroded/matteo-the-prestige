@@ -209,6 +209,7 @@ class game(object):
 
         if weather.name == "Crowstorm":
             randomchance = random.gauss(0,1)
+            print(randomchance)
             if randomchance > -1.5 and randomchance < 1.5:
                 outcome["ishit"] = False
                 outcome["text"] = appearance_outcomes.crows
