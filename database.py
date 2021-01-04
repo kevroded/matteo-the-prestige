@@ -29,7 +29,7 @@ def initialcheck():
                                             json_string text NOT NULL,
                                             timestamp text NOT NULL
                                         ); """
-    
+
     player_table_check_string = """ CREATE TABLE IF NOT EXISTS user_designated_players (
                                         user_id integer PRIMARY KEY,
                                         user_name text,
@@ -66,6 +66,14 @@ def initialcheck():
                                             owner_id integer
                                         ); """
 
+    history_table_check_string = """ CREATE TABLE IF NOT EXISTS history (
+                                            id integer PRIMARY Key,
+                                            Team_1 text NOT NULL,
+                                            Team_1_Score integer,
+                                            Team_2 text NOT NULL,
+                                            Team_2_Score integer
+                                            );"""
+
     if conn is not None:
         c = conn.cursor()
         c.execute(soulscream_table_check_string)
@@ -73,6 +81,7 @@ def initialcheck():
         c.execute(player_table_check_string)
         c.execute(player_stats_table_check_string)
         c.execute(teams_table_check_string)
+        c.execute(history_table_check_string)
 
     conn.commit()
     conn.close()
@@ -110,7 +119,7 @@ def cache_stats(name, json_string):
     if conn is not None:
         c = conn.cursor()
         c.execute(store_string, (name, json_string, datetime.datetime.now(datetime.timezone.utc)))
-        conn.commit() 
+        conn.commit()
 
     conn.close()
 
@@ -123,7 +132,7 @@ def get_soulscream(username):
         c = conn.cursor()
         c.execute("SELECT * FROM soulscreams WHERE name=?", (username,))
         scream = c.fetchone()
-        
+
         try:
             cachetime = datetime.datetime.fromisoformat(scream[3])
             if datetime.datetime.now(datetime.timezone.utc) - cachetime >= datetime.timedelta(days = 7):
@@ -135,7 +144,7 @@ def get_soulscream(username):
         except TypeError:
             conn.close()
             return None
-        
+
         conn.close()
         return scream[2]
 
@@ -152,7 +161,7 @@ def cache_soulscream(username, soulscream):
     if conn is not None:
         c = conn.cursor()
         c.execute(store_string, (username, soulscream, datetime.datetime.now(datetime.timezone.utc)))
-        conn.commit() 
+        conn.commit()
 
     conn.close()
 
@@ -167,11 +176,11 @@ def designate_player(user, player_json):
     if user_player is not None:
         c.execute("DELETE FROM user_designated_players WHERE user_id=?", (user.id,)) #delete player if already exists
     c.execute(store_string, (user.id, user.name, player_json["id"], player_json["name"], json.dumps(player_json)))
-            
+
     conn.commit()
     conn.close()
 
-def get_user_player_conn(conn, user): 
+def get_user_player_conn(conn, user):
     try:
         if conn is not None:
             c = conn.cursor()
@@ -185,7 +194,7 @@ def get_user_player_conn(conn, user):
     except:
         print(conn)
 
-def get_user_player(user): 
+def get_user_player(user):
     conn = create_connection()
     player = get_user_player_conn(conn, user)
     conn.close()
@@ -199,7 +208,7 @@ def save_team(name, team_json_string, user_id):
             store_string = """ INSERT INTO teams(name, team_json_string, timestamp, owner_id)
                             VALUES (?,?, ?, ?) """
             c.execute(store_string, (re.sub('[^A-Za-z0-9 ]+', '', name), team_json_string, datetime.datetime.now(datetime.timezone.utc), user_id)) #this regex removes all non-standard characters
-            conn.commit() 
+            conn.commit()
             conn.close()
             return True
         conn.close()
@@ -216,7 +225,7 @@ def get_team(name, owner=False):
         else:
             c.execute("SELECT * FROM teams WHERE name=?", (re.sub('[^A-Za-z0-9 ]+', '', name),)) #see above note re: regex
         team = c.fetchone()
-        
+
         conn.close()
 
         return team #returns a json string if owner is false, otherwise returns (counter, name, team_json_string, timestamp, owner_id)
@@ -294,3 +303,18 @@ def add_stats(player_game_stats_list):
                     c.execute(f"UPDATE stats SET {stat} = ? WHERE name=?",(player_stats_dic[stat],name))
         conn.commit()
     conn.close()
+
+def cache_history(Team_1, Team_1_Score, Team_2, Team_2_Score):
+        conn = create_connection()
+        store_string = """ INSERT INTO history(Team_1, Team_1_Score, Team_2, Team_2_Score)
+                                VALUES (?,?,?,?) """
+
+        if conn is not None:
+            c = conn.cursor()
+            c.execute(store_string, (Team_1, Team_1_Score, Team_2, Team_2_Score))
+            conn.commit()
+
+        conn.close()
+
+def get_history():
+    pass
