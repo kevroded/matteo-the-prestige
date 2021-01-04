@@ -28,9 +28,21 @@ def all_weathers():
         #generate default config
         super_weather_json = jsonpickle.encode(weather("Supernova", "🌟"))
         mid_weather_json = jsonpickle.encode(weather("Midnight", "🕶"))
+        crow_weather_json = jsonpickle.encode(weather("Crowstorm", ""))
+        slime_weather_json = jsonpickle.encode(weather("Slime", "🟢"))
+        peanut_weather_json = jsonpickle.encode(weather("Peanado", "🥜"))
+        thickair_weather_json = jsonpickle.encode(weather("Thick Air", "🌫️"))
+        molasses_weather_json = jsonpickle.encode(weather("Molasses", "🧇"))
+        coke_weather_json = jsonpickle.encode(weather("Coke Raine", "🥤"))
         config_dic = {
             "Supernova" : super_weather_json,
-            "Midnight": mid_weather_json
+            "Midnight" : mid_weather_json,
+            "Crowstorm" : crow_weather_json,
+            "Slime" : slime_weather_json,
+            "Peanado" : peanut_weather_json,
+            "Thick Air" : thickair_weather_json,
+            "Molasses" : molasses_weather_json,
+            "Coke Raine" : coke_weather_json
             }
         with open("weather_config.json", "w") as config_file:
             json.dump(config_dic, config_file, indent=4)
@@ -112,7 +124,7 @@ class team(object):
             return (True,)
         else:
             return (False, "12 players in the lineup, maximum. We're being generous here.")
-    
+
     def set_pitcher(self, new_player):
         self.pitcher = new_player
         return (True,)
@@ -133,7 +145,7 @@ class team(object):
             while len(self.lineup) <= 4:
                 self.lineup.append(random.choice(self.lineup))
             return True
-        else: 
+        else:
             return False
 
 
@@ -185,13 +197,15 @@ class game(object):
         bat_stat = random_star_gen("batting_stars", batter)
         pitch_stat = random_star_gen("pitching_stars", pitcher)
         if weather.name == "Supernova":
+            pitch_stat = pitch_stat / 0.9
+        elif weather.name == "Thick Air":
             pitch_stat = pitch_stat * 0.9
 
         pb_system_stat = (random.gauss(1*math.erf((bat_stat - pitch_stat)*1.5)-1.8,2.2))
         hitnum = random.gauss(2*math.erf(bat_stat/4)-1,3)
 
 
-        
+
         if pb_system_stat <= 0:
             outcome["ishit"] = False
             fc_flag = False
@@ -200,7 +214,7 @@ class game(object):
             elif hitnum < 1:
                 outcome["text"] = appearance_outcomes.groundout
                 outcome["defender"] = defender
-            elif hitnum < 4: 
+            elif hitnum < 4:
                 outcome["text"] = appearance_outcomes.flyout
                 outcome["defender"] = defender
             else:
@@ -223,10 +237,14 @@ class game(object):
 
             if self.outs < 2 and len(runners) > 1: #fielder's choice replaces not great groundouts if any forceouts are present
                 def_stat = random_star_gen("defense_stars", defender)
+                if self.weather.name == "Coke Raine":
+                    def_stat = def_stat / 0.9
+                elif self.weather.name == "Molasses":
+                    def_stat = def_stat * 0.9
                 if -1.5 <= hitnum and hitnum < -0.5: #poorly hit groundouts
                     outcome["text"] = appearance_outcomes.fielderschoice
                     outcome["defender"] = ""
-            
+
             if 2.5 <= hitnum and self.outs < 2: #well hit flyouts can lead to sacrifice flies/advanced runners
                 if self.bases[2] is not None or self.bases[3] is not None:
                     outcome["advance"] = True
@@ -256,6 +274,8 @@ class game(object):
             run_stars = random_star_gen("baserunning_stars", baserunner)*config()["stolen_base_chance_mod"]
             if self.weather.name == "Midnight":
                 run_stars = run_stars*2
+            elif self.weather.name == "Slime":
+                run_stars = run_stars*.75
             def_stars = random_star_gen("defense_stars", self.get_pitcher())
             if run_stars >= (def_stars - 1.5): #if baserunner isn't worse than pitcher
                 roll = random.random()
@@ -264,7 +284,7 @@ class game(object):
 
         if len(attempts) == 0:
             return False
-        else:     
+        else:
             return (self.steals_check(attempts), 0) #effectively an at-bat outcome with no score
 
     def steals_check(self, attempts):
@@ -310,7 +330,7 @@ class game(object):
             runs = 0
             if self.bases[3] is not None:
                 outcome["text"] = appearance_outcomes.sacrifice
-                self.get_batter().game_stats["sacrifices"] += 1 
+                self.get_batter().game_stats["sacrifices"] += 1
                 self.bases[3] = None
                 runs = 1
             if self.bases[2] is not None:
@@ -322,7 +342,7 @@ class game(object):
 
         elif outcome["text"] == appearance_outcomes.fielderschoice:
             furthest_base, runner = outcome["runners"].pop() #get furthest baserunner
-            self.bases[furthest_base] = None 
+            self.bases[furthest_base] = None
             outcome["fc_out"] = (runner.name, base_string(furthest_base+1)) #runner thrown out
             for index in range(0,len(outcome["runners"])):
                 base, this_runner = outcome["runners"].pop()
@@ -403,7 +423,7 @@ class game(object):
                         self.bases[1] = None
                 self.bases[2] = self.get_batter()
                 return runs
-                    
+
 
             elif outcome["text"] == appearance_outcomes.triple:
                 runs = 0
@@ -435,7 +455,7 @@ class game(object):
             self.get_pitcher().game_stats["hits_allowed"] += 1
 
             if result["text"] == appearance_outcomes.single:
-                self.get_batter().game_stats["total_bases"] += 1               
+                self.get_batter().game_stats["total_bases"] += 1
             elif result["text"] == appearance_outcomes.double:
                 self.get_batter().game_stats["total_bases"] += 2
             elif result["text"] == appearance_outcomes.triple:
@@ -463,11 +483,11 @@ class game(object):
 
                 self.get_batter().game_stats["walks_taken"] += 1
                 self.get_pitcher().game_stats["walks_allowed"] += 1
-            
+
             elif result["text"] == appearance_outcomes.doubleplay:
                 self.get_pitcher().game_stats["outs_pitched"] += 2
                 self.outs += 2
-                self.bases[1] = None     
+                self.bases[1] = None
                 if self.outs < 3:
                     scores_to_add += self.baserunner_check(defender, result)
                     self.get_batter().game_stats["rbis"] -= scores_to_add #remove the fake rbi from the player in advance
@@ -492,12 +512,12 @@ class game(object):
                 self.get_batter().game_stats["strikeouts_taken"] += 1
                 self.get_pitcher().game_stats["strikeouts_given"] += 1
 
-            else: 
+            else:
                 self.get_pitcher().game_stats["outs_pitched"] += 1
                 self.outs += 1
 
         self.get_batter().game_stats["plate_appearances"] += 1
-        
+
         if self.outs < 3:
             offense_team.score += scores_to_add #only add points if inning isn't over
         else:
@@ -507,7 +527,7 @@ class game(object):
         offense_team.lineup_position += 1 #put next batter up
         if self.outs >= 3:
             self.flip_inning()
-         
+
 
         return (result, scores_to_add) #returns ab information and scores
 
@@ -583,7 +603,7 @@ class game(object):
         players.append((self.teams["home"].pitcher.name, self.teams["home"].pitcher.game_stats))
         players.append((self.teams["away"].pitcher.name, self.teams["away"].pitcher.game_stats))
         db.add_stats(players)
-        
+
 
 
 def random_star_gen(key, player):
