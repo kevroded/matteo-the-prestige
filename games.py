@@ -28,7 +28,7 @@ def all_weathers():
         #generate default config
         super_weather_json = jsonpickle.encode(weather("Supernova", "🌟"))
         mid_weather_json = jsonpickle.encode(weather("Midnight", "🕶"))
-        crow_weather_json = jsonpickle.encode(weather("Crowstorm", ""))
+        crow_weather_json = jsonpickle.encode(weather("Crowstorm", "🐦"))
         slime_weather_json = jsonpickle.encode(weather("Slime", "🟢"))
         peanut_weather_json = jsonpickle.encode(weather("Peanado", "🥜"))
         thickair_weather_json = jsonpickle.encode(weather("Thick Air", "🌫️"))
