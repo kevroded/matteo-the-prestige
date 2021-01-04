@@ -315,6 +315,14 @@ class AssignOwnerCommand(Command):
             await msg.channel.send("We couldn't find that team. Typo?")
         #except:
             #await msg.channel.send("We hit a snag. Tell xvi.")
+class ShowHistoryCommand(Command):
+    name = "showhistory"
+    template = "m;showhistory"
+    description = "Shows all game history"
+
+    async def execute(self, msg, command):
+        #list_task = asyncio.create_task(history_pages(msg, game.get_history()))
+        game.get_history()
 
 
 commands = [
@@ -335,6 +343,7 @@ commands = [
     CreditCommand(),
     RomanCommand(),
     HelpCommand(),
+    ShowHistory(),
 ]
 
 client = discord.Client()

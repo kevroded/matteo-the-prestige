@@ -720,6 +720,10 @@ def get_all_teams():
         teams.append(this_team)
     return teams
 
+def get_history():
+    for game in db.get_history():
+        print(game)
+
 def search_team(search_term):
     teams = []
     for team_pickle in db.search_teams(search_term):

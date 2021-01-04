@@ -317,4 +317,10 @@ def cache_history(Team_1, Team_1_Score, Team_2, Team_2_Score):
         conn.close()
 
 def get_history():
-    pass
+    conn = create_connection()
+    if conn is not None:
+        c = conn.cursor()
+        c.execute("SELECT * FROM teams")
+        history_strings = c.fetchall()
+        conn.close()
+        return team_strings
