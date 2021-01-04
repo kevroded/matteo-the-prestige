@@ -738,9 +738,9 @@ def build_team_embed(team):
 def vibe_check(vibes):
     if vibes < -0.8:
         vibe_text = "Honestly Terrible"
-    if vibes < -0.4 and vibes > -0.8:
+    elif vibes < -0.4 and vibes > -0.8:
         vibe_text = "Far Less Than Ideal"
-    if vibes < -0.1 and vibes > -0.4:
+    elif vibes < -0.1 and vibes > -0.4:
         vibe_text = "Less Than Ideal"
     elif vibes > -0.1 and vibes < 0.1:
         vibe_text = "Neutral"
