@@ -68,6 +68,7 @@ class appearance_outcomes(Enum):
     triple = "hits a triple!"
     homerun = "hits a home run!"
     grandslam = "hits a grand slam!"
+    crows = "is chased away by crows."
 
 
 class player(object):
@@ -205,8 +206,13 @@ class game(object):
         hitnum = random.gauss(2*math.erf(bat_stat/4)-1,3)
 
 
-
-        if pb_system_stat <= 0:
+        if weather.name == "Crowstorm":
+            randomchance = random.gauss(0,1)
+            if randomchance > -1.5 and randomchance < 1.5:
+                outcome["ishit"] = False
+                outcome["text"] = appearance_outcomes.crows
+                crow = True
+        elif pb_system_stat <= 0 and crow = False:
             outcome["ishit"] = False
             fc_flag = False
             if hitnum < -1.5:
@@ -248,7 +254,7 @@ class game(object):
             if 2.5 <= hitnum and self.outs < 2: #well hit flyouts can lead to sacrifice flies/advanced runners
                 if self.bases[2] is not None or self.bases[3] is not None:
                     outcome["advance"] = True
-        else:
+        elif crows == False:
             outcome["ishit"] = True
             if hitnum < 1:
                 outcome["text"] = appearance_outcomes.single
