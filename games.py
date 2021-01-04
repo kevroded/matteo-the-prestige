@@ -197,9 +197,9 @@ class game(object):
 
         bat_stat = random_star_gen("batting_stars", batter)
         pitch_stat = random_star_gen("pitching_stars", pitcher)
-        if weather.name == "Supernova":
+        if self.weather.name == "Supernova":
             pitch_stat = pitch_stat / 0.9
-        elif weather.name == "Thick Air":
+        elif self.weather.name == "Thick Air":
             pitch_stat = pitch_stat * 0.9
 
         pb_system_stat = (random.gauss(1*math.erf((bat_stat - pitch_stat)*1.5)-1.8,2.2))
@@ -207,7 +207,7 @@ class game(object):
         crow = False
 
 
-        if weather.name == "Crowstorm":
+        if self.weather.name == "Crowstorm":
             randomchance = random.gauss(0,1)
             print(randomchance)
             if randomchance > -1.5 and randomchance < 1.5:
