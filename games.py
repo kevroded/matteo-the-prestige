@@ -212,6 +212,7 @@ class game(object):
             print(randomchance)
             if randomchance > -1.5 and randomchance < 1.5:
                 outcome["ishit"] = False
+                fc_flag = False
                 outcome["text"] = appearance_outcomes.crows
                 crow = True
         elif pb_system_stat <= 0 and crow == False:
