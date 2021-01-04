@@ -255,7 +255,7 @@ class game(object):
             if 2.5 <= hitnum and self.outs < 2: #well hit flyouts can lead to sacrifice flies/advanced runners
                 if self.bases[2] is not None or self.bases[3] is not None:
                     outcome["advance"] = True
-        elif crows == False:
+        elif crow == False:
             outcome["ishit"] = True
             if hitnum < 1:
                 outcome["text"] = appearance_outcomes.single
