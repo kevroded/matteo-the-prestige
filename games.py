@@ -211,9 +211,11 @@ class game(object):
             randomchance = random.gauss(0,1)
             print(randomchance)
             if randomchance < -1.5 and randomchance > 1.5:
+                outcome["ishit"] = False
+                fc_flag = False
                 outcome["text"] = appearance_outcomes.crows
                 crow = True
-        elif pb_system_stat <= 0 and crow == False:
+        if pb_system_stat <= 0 and crow == False:
             outcome["ishit"] = False
             fc_flag = False
             if hitnum < -1.5:
@@ -255,7 +257,7 @@ class game(object):
             if 2.5 <= hitnum and self.outs < 2: #well hit flyouts can lead to sacrifice flies/advanced runners
                 if self.bases[2] is not None or self.bases[3] is not None:
                     outcome["advance"] = True
-        elif crow == False:
+        if crow == False:
             outcome["ishit"] = True
             if hitnum < 1:
                 outcome["text"] = appearance_outcomes.single
