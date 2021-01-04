@@ -204,6 +204,7 @@ class game(object):
 
         pb_system_stat = (random.gauss(1*math.erf((bat_stat - pitch_stat)*1.5)-1.8,2.2))
         hitnum = random.gauss(2*math.erf(bat_stat/4)-1,3)
+        crow = False
 
 
         if weather.name == "Crowstorm":
