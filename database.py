@@ -320,7 +320,7 @@ def get_history():
     conn = create_connection()
     if conn is not None:
         c = conn.cursor()
-        c.execute("SELECT * FROM teams")
+        c.execute("SELECT * FROM history")
         history_strings = c.fetchall()
         conn.close()
         return history_strings
