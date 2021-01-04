@@ -212,7 +212,7 @@ class game(object):
                 outcome["ishit"] = False
                 outcome["text"] = appearance_outcomes.crows
                 crow = True
-        elif pb_system_stat <= 0 and crow = False:
+        elif pb_system_stat <= 0 and crow == False:
             outcome["ishit"] = False
             fc_flag = False
             if hitnum < -1.5:
