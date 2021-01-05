@@ -865,6 +865,7 @@ def get_history():
 def search_team(search_term):
     teams = []
     for team_pickle in db.search_teams(search_term):
+        print(team_pickle)
         team_json = jsonpickle.decode(team_pickle[0], keys=True, classes=team)
         try:
             if team_json.pitcher is not None:
