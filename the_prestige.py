@@ -137,9 +137,11 @@ class StartGameCommand(Command):
         try:
             team_name1 = command.split("\n")[1].strip()
             team1 = get_team_fuzzy_search(team_name1)
+            print(team1)
 
             team_name2 = command.split("\n")[2].strip()
             team2 = get_team_fuzzy_search(team_name2)
+            print(team2)
 
             innings = int(command.split("\n")[3])
         except IndexError:
@@ -1217,6 +1219,6 @@ def get_team_fuzzy_search(team_name):
         teams = games.search_team(team_name.lower())
         if len(teams) == 1:
             team = teams[0]
-    return 
+    return
 
 client.run(config()["token"])
