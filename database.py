@@ -295,6 +295,7 @@ def search_teams(search_string):
         c.execute("SELECT team_json_string FROM teams WHERE name LIKE ?",(re.sub('[^A-Za-z0-9 %]+', '', f"%{search_string}%"),))
         team_json_strings = c.fetchall()
         conn.close()
+        print('worked')
         print(team_json_strings)
 
     conn.close()
