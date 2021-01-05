@@ -135,22 +135,14 @@ class StartGameCommand(Command):
 
         innings = None
         try:
-            team_name1 = command.split("\n")[1].strip()
-            team1 = get_team_fuzzy_search(team_name1)
-            print(team_name1)
-
-            team_name2 = command.split("\n")[2].strip()
-            team2 = get_team_fuzzy_search(team_name2)
-            print(team_name2)
-
+            team1 = games.get_team(command.split("\n")[1])
+            team2 = games.get_team(command.split("\n")[2])
             innings = int(command.split("\n")[3])
         except IndexError:
             try:
-                team_name1 = command.split("\n")[1].strip()
-                team1 = get_team_fuzzy_search(team_name1)
-
-                team_name2 = command.split("\n")[2].strip()
-                team2 = get_team_fuzzy_search(team_name2)
+                team1 = games.get_team(command.split("\n")[1])
+                team2 = games.get_team(command.split("\n")[2])
+                innings = None
             except IndexError:
                 await msg.channel.send("We need at least three lines: startgame, away team, and home team are required. Optionally, the number of innings can go at the end, if you want a change of pace.")
                 return
