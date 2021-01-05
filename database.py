@@ -223,7 +223,7 @@ def update_team(name, team_json_string):
             c = conn.cursor()
             store_string = "UPDATE teams SET team_json_string = ? WHERE name=?"
             c.execute(store_string, (team_json_string, (re.sub('[^A-Za-z0-9 ]+', '', name)))) #this regex removes all non-standard characters
-            conn.commit() 
+            conn.commit()
             conn.close()
             return True
         conn.close()
@@ -295,7 +295,7 @@ def search_teams(search_string):
         c.execute("SELECT team_json_string FROM teams WHERE name LIKE ?",(re.sub('[^A-Za-z0-9 %]+', '', f"%{search_string}%"),))
         team_json_strings = c.fetchall()
         conn.close()
-        return team_json_strings
+        print team_json_strings
 
     conn.close()
     return None
