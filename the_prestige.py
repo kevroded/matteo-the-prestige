@@ -492,6 +492,54 @@ class ShowHistoryCommand(Command):
 
     async def execute(self, msg, command):
         list_task = asyncio.create_task(history_pages(msg, games.get_history()))
+class StartTournamentCommand(Command):
+    name = "starttournament"
+    template = """m;starttournament
+    [tournament name]
+    [list of teams, each on a new line]"""
+    description = "Starts a randomly seeded tournament with up to 64 provided teams, automatically adding byes as necessary. All series have a 5 minute break between games and by default there is a 10 minute break between rounds. The current tournament format is:\nBest of 5 until the finals, which are Best of 7."
+
+    async def execute(self, msg, command):
+        if config()["game_freeze"]:
+            await msg.channel.send("Patch incoming. We're not allowing new games right now.")
+            return
+
+        to_parse = command.split("\n")[0]
+        if "--rounddelay " in to_parse:
+            try:
+                round_delay = int(to_parse.split("--rounddelay ")[1].split(" ")[0])
+            except ValueError:
+                await msg.channel.send("The delay between rounds should be a whole number.")
+                return
+            if round_delay < 1 or round_delay > 120:
+                await msg.channel.send("The delay between rounds has to be between 1 and 120 minutes.")
+        else:
+            round_delay = 10
+
+        tourney_name = command.split("\n")[1]
+        list_of_team_names = command.split("\n")[2:]
+        team_dic = {}
+        for name in list_of_team_names:
+            team = get_team_fuzzy_search(name.strip())
+            if team == None:
+                await msg.channel.send(f"We couldn't find {name}. Try again?")
+                return
+            team_dic[team] = {"wins": 0}
+
+        channel = msg.channel
+        await msg.delete()
+
+        if len(team_dic) < 2:
+            await msg.channel.send("One team does not a tournament make.")
+            return
+
+        id = random.randint(1111,9999)
+
+        tourney = leagues.tournament(tourney_name, team_dic, id=id, secs_between_rounds = round_delay * 60)
+        tourney.build_bracket(random_sort = True)
+
+
+        await start_tournament_round(channel, tourney)
 
 
 commands = [
