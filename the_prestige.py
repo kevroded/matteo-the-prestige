@@ -1211,5 +1211,12 @@ async def history_pages(msg, all_games, search_term=None):
                 await teams_list.edit(embed=pages[current_page])
             except asyncio.TimeoutError:
                 return
+def get_team_fuzzy_search(team_name):
+    team = games.get_team(team_name)
+    if team is None:
+        teams = games.search_team(team_name.lower())
+        if len(teams) == 1:
+            team = teams[0]
+    return 
 
 client.run(config()["token"])
