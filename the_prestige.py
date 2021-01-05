@@ -137,11 +137,11 @@ class StartGameCommand(Command):
         try:
             team_name1 = command.split("\n")[1].strip()
             team1 = get_team_fuzzy_search(team_name1)
-            print(team1)
+            print(team_name1)
 
             team_name2 = command.split("\n")[2].strip()
             team2 = get_team_fuzzy_search(team_name2)
-            print(team2)
+            print(team_name2)
 
             innings = int(command.split("\n")[3])
         except IndexError:
