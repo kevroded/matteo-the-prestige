@@ -1,6 +1,7 @@
 import asyncio, time, datetime, games, json, threading, jinja2, leagues
 from flask import Flask, url_for, Response, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
+import database as db
 
 app = Flask("the-prestige")
 app.config['SECRET KEY'] = 'dev'
@@ -48,7 +49,7 @@ def update_loop():
                 state["update_emoji"] = "🍿"                    #weather_text
                 state["update_text"] = "Play blall!"            #they also need a timestamp
                 state["start_delay"] -= 1
-            
+
             state["display_top_of_inning"] = state["top_of_inning"]
 
             if state["start_delay"] <= 0:
@@ -63,6 +64,7 @@ def update_loop():
                 if state["update_pause"] == 1:
                     state["update_emoji"] = "🍿"
                     if this_game.over:
+                        db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score)
                         state["display_inning"] -= 1
                         state["display_top_of_inning"] = False
                         winning_team = this_game.teams['home'].name if this_game.teams['home'].score > this_game.teams['away'].score else this_game.teams['away'].name
@@ -88,7 +90,7 @@ def update_loop():
                         for attempt in this_game.last_update[0]["steals"]:
                             updatestring += attempt + "\n"
 
-                        state["update_emoji"] = "💎" 
+                        state["update_emoji"] = "💎"
                         state["update_text"] = updatestring
 
                     elif "mulligan" in this_game.last_update[0].keys():
@@ -123,7 +125,7 @@ def update_loop():
 
             state["bases"] = this_game.named_bases()
 
-            state["top_of_inning"] = this_game.top_of_inning 
+            state["top_of_inning"] = this_game.top_of_inning
 
             game_states[game_time] = state
 
@@ -143,7 +145,7 @@ def update_loop():
         global data_to_send
         data_to_send = []
         template = jinja2.Environment(loader=jinja2.FileSystemLoader('templates')).get_template('game_box.html')
-        
+
         for timestamp in game_states:
             data_to_send.append({
                 'timestamp' : timestamp,
