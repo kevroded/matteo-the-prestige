@@ -71,7 +71,8 @@ def initialcheck():
                                             Team_1 text NOT NULL,
                                             Team_1_Score integer,
                                             Team_2 text NOT NULL,
-                                            Team_2_Score integer
+                                            Team_2_Score integer,
+                                            Weather text NOT NULL
                                             );"""
 
     if conn is not None:
