@@ -65,8 +65,7 @@ def update_loop():
                     state["update_emoji"] = "🍿"
                     if this_game.over:
                         print(this_game)
-                        #db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score,
-                        this_game.weather_text)
+                        #db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather_text)
                         state["display_inning"] -= 1
                         state["display_top_of_inning"] = False
                         winning_team = this_game.teams['home'].name if this_game.teams['home'].score > this_game.teams['away'].score else this_game.teams['away'].name
