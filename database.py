@@ -320,14 +320,14 @@ def add_stats(player_game_stats_list):
         conn.commit()
     conn.close()
 
-def cache_history(Team_1, Team_1_Score, Team_2, Team_2_Score):
+def cache_history(Team_1, Team_1_Score, Team_2, Team_2_Score, weather):
         conn = create_connection()
-        store_string = """ INSERT INTO history(Team_1, Team_1_Score, Team_2, Team_2_Score)
+        store_string = """ INSERT INTO history(Team_1, Team_1_Score, Team_2, Team_2_Score, Weather)
                                 VALUES (?,?,?,?) """
 
         if conn is not None:
             c = conn.cursor()
-            c.execute(store_string, (Team_1, Team_1_Score, Team_2, Team_2_Score))
+            c.execute(store_string, (Team_1, Team_1_Score, Team_2, Team_2_Score, weather))
             conn.commit()
 
         conn.close()
