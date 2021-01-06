@@ -64,7 +64,8 @@ def update_loop():
                 if state["update_pause"] == 1:
                     state["update_emoji"] = "🍿"
                     if this_game.over:
-                        db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score,
+                        print(this_game)
+                        #db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score,
                         this_game.weather_text)
                         state["display_inning"] -= 1
                         state["display_top_of_inning"] = False
