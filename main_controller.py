@@ -64,16 +64,18 @@ def update_loop():
                 if state["update_pause"] == 1:
                     state["update_emoji"] = "🍿"
                     if this_game.over:
-                        db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
                         state["display_inning"] -= 1
                         state["display_top_of_inning"] = False
                         winning_team = this_game.teams['home'].name if this_game.teams['home'].score > this_game.teams['away'].score else this_game.teams['away'].name
                         if this_game.victory_lap and winning_team == this_game.teams['home'].name:
                             state["update_text"] = f"{winning_team} wins with a victory lap!"
+                            db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
                         elif winning_team == this_game.teams['home'].name:
                             state["update_text"] = f"{winning_team} wins, shaming {this_game.teams['away'].name}!"
+                            db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
                         else:
                             state["update_text"] = f"{winning_team} wins!"
+                            db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
                         state["pitcher"] = "-"
                         state["batter"] = "-"
                     elif this_game.top_of_inning:
