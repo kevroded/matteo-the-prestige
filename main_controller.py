@@ -69,16 +69,10 @@ def update_loop():
                         winning_team = this_game.teams['home'].name if this_game.teams['home'].score > this_game.teams['away'].score else this_game.teams['away'].name
                         if this_game.victory_lap and winning_team == this_game.teams['home'].name:
                             state["update_text"] = f"{winning_team} wins with a victory lap!"
-                            db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
-                            break
                         elif winning_team == this_game.teams['home'].name:
                             state["update_text"] = f"{winning_team} wins, shaming {this_game.teams['away'].name}!"
-                            db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
-                            break
                         else:
                             state["update_text"] = f"{winning_team} wins!"
-                            db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
-                            break
                         state["pitcher"] = "-"
                         state["batter"] = "-"
                     elif this_game.top_of_inning:
@@ -138,6 +132,7 @@ def update_loop():
                 if this_game.over:
                     state["update_pause"] = 2
                     if state["end_delay"] < 0:
+                        db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
                         master_games_dic.pop(game_time)
                     else:
                         state["end_delay"] -= 1
