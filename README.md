@@ -6,7 +6,7 @@ This fork changes small things about the bot to better fit in in the FredChat di
 - Adds the help command as the bot's status
 - Shows a players vibes when requesting their stats
 - Updated the credit command to credit Sakimori and SIBR instead of the pfp artist as the original profile pic is not being used
-- Game history can be viewed in the same style embed as showallteams
+- Game history with weather can be viewed in the same style embed as showallteams
 - Merged in commits to utilize the website
 
 # matteo-the-prestige
