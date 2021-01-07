@@ -32,9 +32,9 @@ def handle_new_conn(data):
 def update_loop():
     while True:
         game_states = {}
-        game_times = iter(master_games_dic.copy().keys())
-        for game_time in game_times:
-            this_game, state, discrim_string = master_games_dic[game_time]
+        game_ids = iter(master_games_dic.copy().keys())
+        for game_id in game_ids:
+            this_game, state, discrim_string = master_games_dic[game_id]
             test_string = this_game.gamestate_display_full()
             state["leagueoruser"] = discrim_string
             state["display_inning"] = this_game.inning          #games need to be initialized with the following keys in state:
@@ -126,7 +126,7 @@ def update_loop():
 
             state["top_of_inning"] = this_game.top_of_inning
 
-            game_states[game_time] = state
+            game_states[game_id] = state
 
             if state["update_pause"] <= 1 and state["start_delay"] < 0:
                 if this_game.over:
@@ -136,7 +136,7 @@ def update_loop():
                         master_games_dic.pop(game_time)
                     else:
                         state["end_delay"] -= 1
-                        master_games_dic[game_time][1]["end_delay"] -= 1
+                        master_games_dic[game_id][1]["end_delay"] -= 1
                 else:
                     this_game.gamestate_update_full()
 
@@ -146,12 +146,12 @@ def update_loop():
         data_to_send = []
         template = jinja2.Environment(loader=jinja2.FileSystemLoader('templates')).get_template('game_box.html')
 
-        for timestamp in game_states:
+        for id in game_states:
             data_to_send.append({
-                'timestamp' : timestamp,
-                'league' : game_states[timestamp]['leagueoruser'] if game_states[timestamp]['is_league'] else '',
-                'state' : game_states[timestamp],
-                'html' : template.render(state=game_states[timestamp], timestamp=timestamp)
+                'timestamp' : id,
+                'league' : game_states[id]['leagueoruser'] if game_states[id]['is_league'] else '',
+                'state' : game_states[id],
+                'html' : template.render(state=game_states[id], timestamp=id)
             })
 
         socketio.emit("states_update", data_to_send)
