@@ -133,7 +133,7 @@ def update_loop():
                     state["update_pause"] = 2
                     if state["end_delay"] < 0:
                         db.cache_history(this_game.teams['home'].name, this_game.teams["home"].score, this_game.teams['away'].name, this_game.teams['away'].score, this_game.weather.name)
-                        master_games_dic.pop(game_time)
+                        master_games_dic.pop(game_id)
                     else:
                         state["end_delay"] -= 1
                         master_games_dic[game_id][1]["end_delay"] -= 1
