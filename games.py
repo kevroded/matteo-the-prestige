@@ -850,7 +850,8 @@ def get_history():
         game_dict = {"Team1" : game[1],
                      "Team1Score" : game[2],
                      "Team2" : game[3],
-                     "Team2Score" : game[4]}
+                     "Team2Score" : game[4],
+                     "Weather" : game[5]}
         games.append(game_dict)
     return games
 
