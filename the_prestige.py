@@ -1293,6 +1293,6 @@ def get_team_fuzzy_search(team_name):
         teams = games.search_team(team_name.lower())
         if len(teams) == 1:
             team = teams[0]
-    return
+    return team
 
 client.run(config()["token"])
