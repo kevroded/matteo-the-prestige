@@ -103,8 +103,7 @@ class ShowPlayerCommand(Command):
     description = "Displays any name's stars in a nice discord embed, there's a limit of 70 characters. That should be *plenty*. Note: if you want to lookup a lot of different players you can do it on onomancer here instead of spamming this command a bunch and clogging up discord: <https://onomancer.sibr.dev/reflect>"
 
     async def execute(self, msg, command):
-        print(ono.get_stats)
-        #player_name = json.loads(ono.get_stats(command.split(" ",1)[1]))
+        player_name = json.loads(ono.get_stats(command.split(" ",1)[1]))
         await msg.channel.send(embed=build_star_embed(player_name))
 
 class StartGameCommand(Command):
