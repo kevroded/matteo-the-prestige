@@ -1,4 +1,5 @@
 # A simsim fork for the FredChat
+This is a test change
 
 This fork changes small things about the bot to better fit in in the FredChat discord. The official readme can be seen below and a summary of changes is viewable directly below this
 - Removes almost all references to Matteo as that is not the name of the bot user
